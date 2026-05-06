@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Segundo Previo - Computacion en la Nube</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121a33;
+        --text: #e7ecff;
+        --muted: #b3c0ea;
+        --accent: #74c0fc;
+        --accent-2: #8ce99a;
+        --border: #2a3866;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        background: linear-gradient(180deg, #070b17 0%, #0b1020 100%);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 32px 20px 56px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-top: 0.4em;
+        margin-bottom: 0.45em;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+        color: var(--accent);
+      }
+
+      h3 {
+        font-size: 1.12rem;
+        color: var(--accent-2);
+      }
+
+      p,
+      li {
+        color: var(--text);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      blockquote {
+        margin: 0.8rem 0;
+        border-left: 4px solid var(--accent);
+        padding: 0.5rem 1rem;
+        background: rgba(116, 192, 252, 0.08);
+        border-radius: 8px;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 22px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background: rgba(116, 192, 252, 0.15);
+      }
+
+      code {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 0.1rem 0.35rem;
+        border-radius: 6px;
+      }
+
+      .important {
+        border: 1px solid #ff8787;
+        background: rgba(255, 135, 135, 0.1);
+        padding: 12px 14px;
+        border-radius: 10px;
+      }
+
+      .endpoints li {
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Segundo Previo - Computacion en la Nube</h1>
+        <h2>Cloud Store Lab - Google Cloud + FastAPI</h2>
+
+        <h3>Modalidad</h3>
+        <p>Trabajo en parejas.</p>
+        <blockquote>
+          Al menos uno de los integrantes debe tener acceso funcional a Google Cloud y permisos suficientes para desplegar recursos.
+        </blockquote>
+      </section>
+
+      <section class="card">
+        <h2>Objetivo</h2>
+        <p>El objetivo de esta actividad NO es evaluar FastAPI como framework.</p>
+        <p>El objetivo es evaluar su capacidad para:</p>
+        <ul>
+          <li>Configurar servicios cloud reales.</li>
+          <li>Resolver problemas de conectividad.</li>
+          <li>Manejar permisos e IAM.</li>
+          <li>Trabajar con variables de entorno.</li>
+          <li>Integrar multiples servicios administrados de Google Cloud.</li>
+          <li>Desplegar una aplicacion funcional en la nube.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Descripcion General</h2>
+        <p>Se les entregara un repositorio base minimo con:</p>
+        <ul>
+          <li><code>main.py</code></li>
+          <li><code>requirements.txt</code></li>
+          <li><code>.env.example</code></li>
+          <li><code>README.md</code></li>
+        </ul>
+        <p>El repositorio tendra endpoints vacios (<code>pass</code>) y comentarios guia.</p>
+        <p>
+          Ustedes deberan completar la integracion cloud y lograr que la aplicacion funcione completamente desplegada en Google Cloud.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Arquitectura Esperada</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>App Engine Standard</td>
+              <td>Hosting de la API</td>
+            </tr>
+            <tr>
+              <td>Cloud SQL (PostgreSQL)</td>
+              <td>Persistencia relacional</td>
+            </tr>
+            <tr>
+              <td>Cloud Storage</td>
+              <td>Almacenamiento de imagenes</td>
+            </tr>
+            <tr>
+              <td>Firestore</td>
+              <td>Eventos/auditoria</td>
+            </tr>
+            <tr>
+              <td>Variables de entorno</td>
+              <td>Configuracion</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Requisitos Tecnicos</h2>
+
+        <h3>1. Ejecutar localmente</h3>
+        <p>Deben demostrar que la aplicacion puede correr localmente:</p>
+        <ul>
+          <li>Directamente desde el host.</li>
+          <li>O usando Docker (opcional).</li>
+        </ul>
+
+        <hr />
+
+        <h3>2. Desplegar en Google Cloud</h3>
+        <p>La aplicacion debe ejecutarse en:</p>
+        <ul>
+          <li><strong>Google App Engine Standard</strong></li>
+        </ul>
+
+        <hr />
+
+        <h3>3. Integrar Cloud SQL</h3>
+        <p>Deben:</p>
+        <ul>
+          <li>Crear instancia PostgreSQL.</li>
+          <li>Crear base de datos.</li>
+          <li>Conectarse usando <code>psycopg2</code>.</li>
+          <li>Crear y consultar informacion.</li>
+        </ul>
+
+        <hr />
+
+        <h3>4. Integrar Cloud Storage</h3>
+        <p>Deben:</p>
+        <ul>
+          <li>Crear bucket.</li>
+          <li>Subir imagenes.</li>
+          <li>Resolver permisos correctamente.</li>
+          <li>Evitar errores <code>403 Forbidden</code>.</li>
+        </ul>
+
+        <hr />
+
+        <h3>5. Integrar Firestore</h3>
+        <p>Deben:</p>
+        <ul>
+          <li>Registrar eventos/auditoria.</li>
+          <li>Consultar eventos.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Endpoints Esperados</h2>
+        <ul class="endpoints">
+          <li><code>GET /health</code> - Health check.</li>
+          <li><code>POST /products</code> - Crear producto.</li>
+          <li><code>GET /products</code> - Listar productos.</li>
+          <li><code>POST /products/{product_id}/image</code> - Subir imagen de producto.</li>
+          <li><code>POST /products/{product_id}/comments</code> - Crear comentario.</li>
+          <li><code>GET /audit/events</code> - Consultar eventos.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Sustentacion</h2>
+        <p>La sustentacion sera:</p>
+        <ul>
+          <li>En vivo.</li>
+          <li>En clase.</li>
+          <li>Individual.</li>
+          <li>Maximo 8 minutos por grupo.</li>
+        </ul>
+
+        <div class="important">
+          <strong>IMPORTANTE:</strong>
+          <p>Deben venir preparados. No habra tiempo para:</p>
+          <ul>
+            <li>Instalar dependencias.</li>
+            <li>Crear buckets.</li>
+            <li>Arreglar permisos.</li>
+            <li>Buscar documentacion.</li>
+            <li>Depurar despliegues.</li>
+          </ul>
+          <p>La aplicacion debe llegar funcionando.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Pruebas HTTP</h2>
+        <p>Durante la sustentacion deberan demostrar el funcionamiento de los endpoints usando:</p>
+        <ul>
+          <li>Postman</li>
+          <li>Insomnia</li>
+          <li>Bruno</li>
+          <li>o Cartero</li>
+        </ul>
+        <p>Pueden usar cualquier cliente REST.</p>
+
+        <div class="important">
+          <strong>IMPORTANTE:</strong>
+          <p>Deben ser capaces de:</p>
+          <ul>
+            <li>Subir imagenes.</li>
+            <li>Enviar JSON.</li>
+            <li>Probar endpoints en remoto.</li>
+            <li>Demostrar respuestas funcionales.</li>
+          </ul>
+          <p>
+            La resolucion de como enviar archivos <code>multipart/form-data</code> queda completamente a cargo de ustedes.
+          </p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Uso de IA</h2>
+        <p>Pueden usar herramientas de IA para ayudarse:</p>
+        <ul>
+          <li>ChatGPT</li>
+          <li>Cursor</li>
+          <li>Copilot</li>
+          <li>Claude</li>
+          <li>Gemini</li>
+          <li>etc.</li>
+        </ul>
+        <p>Tambien se les recomienda:</p>
+        <ul>
+          <li>Crear prompts.</li>
+          <li>Crear skills.</li>
+          <li>Documentar comandos utiles.</li>
+          <li>Automatizar tareas repetitivas.</li>
+        </ul>
+
+        <div class="important">
+          <strong>PERO:</strong>
+          <p>Durante la sustentacion deben demostrar que:</p>
+          <ul>
+            <li>Entienden lo que hicieron.</li>
+            <li>Saben explicar la arquitectura.</li>
+            <li>Saben explicar permisos.</li>
+            <li>Saben explicar despliegue.</li>
+            <li>Saben explicar errores encontrados.</li>
+            <li>Y saben navegar su propia solucion.</li>
+          </ul>
+          <p>Si no pueden explicar algo, se asumira que no lo comprenden.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Criterios de Evaluacion</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th>Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Despliegue funcional en App Engine</td>
+              <td>25%</td>
+            </tr>
+            <tr>
+              <td>Integracion Cloud SQL</td>
+              <td>20%</td>
+            </tr>
+            <tr>
+              <td>Integracion Cloud Storage</td>
+              <td>20%</td>
+            </tr>
+            <tr>
+              <td>Integracion Firestore</td>
+              <td>15%</td>
+            </tr>
+            <tr>
+              <td>Variables de entorno y configuracion</td>
+              <td>10%</td>
+            </tr>
+            <tr>
+              <td>Sustentacion tecnica individual</td>
+              <td>10%</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Lo que se espera de ustedes</h2>
+        <p>Se espera que:</p>
+        <ul>
+          <li>Investiguen.</li>
+          <li>Lean documentacion.</li>
+          <li>Solucionen errores.</li>
+          <li>Entiendan IAM.</li>
+          <li>Entiendan variables de entorno.</li>
+          <li>Entiendan conectividad cloud.</li>
+          <li>Entiendan despliegue administrado.</li>
+        </ul>
+        <p>
+          Esta actividad esta disenada para aproximarlos a problemas reales de ingenieria cloud.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Recomendaciones</h2>
+        <ul>
+          <li>No dejar permisos para ultima hora.</li>
+          <li>Probar el despliegue varios dias antes.</li>
+          <li>Validar que App Engine realmente puede conectarse a Cloud SQL.</li>
+          <li>Validar que Firestore realmente registra eventos.</li>
+          <li>Validar que las imagenes realmente quedan almacenadas en Cloud Storage.</li>
+          <li>Practicar la sustentacion antes de la clase.</li>
+          <li>Tener claro que hizo cada integrante.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Entregables</h2>
+        <p>Cada pareja debera entregar:</p>
+        <ul>
+          <li>URL publica de la aplicacion.</li>
+          <li>Repositorio final.</li>
+          <li>
+            Evidencia funcional de:
+            <ul>
+              <li>Cloud SQL</li>
+              <li>Cloud Storage</li>
+              <li>Firestore</li>
+            </ul>
+          </li>
+          <li>Evidencia del despliegue.</li>
+          <li>Integrantes del grupo.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

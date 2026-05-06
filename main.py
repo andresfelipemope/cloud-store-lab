@@ -1,0 +1,68 @@
+"""
+Minimal FastAPI teaching app for cloud evaluation.
+
+This file is intentionally incomplete. Students must implement:
+- Cloud SQL (PostgreSQL) integration
+- Cloud Storage integration
+- Firestore integration
+"""
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(title="Cloud Computing Evaluation API (Starter)")
+
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+
+
+class CommentCreate(BaseModel):
+    author: str
+    text: str
+
+
+@app.get("/health")
+def health():
+    # TODO: Return service status and optionally dependency status.
+    # Keep this endpoint simple for uptime checks.
+    pass
+
+
+@app.post("/products")
+def create_product(payload: ProductCreate):
+    # TODO: Validate and store product data in Cloud SQL (PostgreSQL).
+    # Do not keep products in memory for the final solution.
+    # Students should use psycopg2 and proper SQL schema design.
+    pass
+
+
+@app.get("/products")
+def list_products():
+    # TODO: Read and return product records from Cloud SQL (PostgreSQL).
+    # Consider pagination and filtering in the final implementation.
+    pass
+
+
+@app.post("/products/{product_id}/image")
+def upload_product_image(product_id: int):
+    # TODO: Accept an image upload and store it in Cloud Storage.
+    # Save metadata or URL reference in Cloud SQL as needed.
+    # Students should implement secure bucket access and object naming.
+    pass
+
+
+@app.post("/products/{product_id}/comments")
+def add_product_comment(product_id: int, payload: CommentCreate):
+    # TODO: Write comment/audit-style data to Firestore.
+    # Students should design a document structure and validation rules.
+    pass
+
+
+@app.get("/audit/events")
+def get_audit_events():
+    # TODO: Read audit events from Firestore and return them.
+    # Students should think about ordering, limits, and filtering.
+    pass
