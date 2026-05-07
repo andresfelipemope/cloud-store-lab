@@ -1,8 +1,9 @@
 import os
 
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 from google.cloud import storage
 from dotenv import load_dotenv
+import database
 
 load_dotenv()
 
@@ -10,6 +11,24 @@ BUCKET_NAME = os.getenv("GCS_BUCKET_NAME")
 
 
 def upload_image_to_gcs(product_id: int, file: UploadFile):
+
+    conn = database.get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        "SELECT id FROM products WHERE id = %s",
+        (product_id,)
+    )
+
+    product = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
 
     client = storage.Client()
 

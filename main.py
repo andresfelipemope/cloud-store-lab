@@ -58,9 +58,15 @@ def upload_product_image(
     product_id: int,
     file: UploadFile = File(...)
 ):
+    
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only image files are allowed"
+        )
 
     try:
-        
+
         img_url = upload_image_to_gcs(product_id, file)
 
         return {
@@ -68,6 +74,9 @@ def upload_product_image(
             "product_id": product_id,
             "img_url": img_url
         }
+    
+    except HTTPException as e:
+        raise e
 
     except Exception as e:
         raise HTTPException(
