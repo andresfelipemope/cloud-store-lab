@@ -6,16 +6,8 @@ load_dotenv()
 
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 DATABASE_ID = os.getenv("FIRESTORE_DATABASE_ID")
-
-AUDIT_COLLECTION = os.getenv(
-    "FIRESTORE_COLLECTION_AUDIT_EVENTS",
-    "audit_events"
-)
-
-COMMENTS_COLLECTION = os.getenv(
-    "FIRESTORE_COLLECTION_COMMENTS",
-    "product_comments"
-)
+AUDIT_COLLECTION = os.getenv("FIRESTORE_COLLECTION_AUDIT_EVENTS")
+COMMENTS_COLLECTION = os.getenv("FIRESTORE_COLLECTION_COMMENTS")
 
 
 def get_firestore_client():
