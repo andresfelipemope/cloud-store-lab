@@ -6,6 +6,7 @@ This file is intentionally incomplete. Students must implement:
 - Cloud Storage integration
 - Firestore integration
 """
+import database
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -36,14 +37,14 @@ def create_product(payload: ProductCreate):
     # TODO: Validate and store product data in Cloud SQL (PostgreSQL).
     # Do not keep products in memory for the final solution.
     # Students should use psycopg2 and proper SQL schema design.
-    pass
+    return database.create_product(payload)
 
 
 @app.get("/products")
 def list_products():
     # TODO: Read and return product records from Cloud SQL (PostgreSQL).
     # Consider pagination and filtering in the final implementation.
-    pass
+    return database.get_products()
 
 
 @app.post("/products/{product_id}/image")
