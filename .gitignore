@@ -1,0 +1,15 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Google Cloud credentials
+previo2-181122-09f7090ee83a.json
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
