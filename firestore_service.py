@@ -43,4 +43,34 @@ def write_audit_event(event_type: str, data: dict | None = None):
         "data": payload,
     }
 
+def add_product_comment(product_id: int, author: str, text: str):
+    db = get_firestore_client()
+
+    comment = {
+        "product_id": product_id,
+        "author": author,
+        "text": text,
+        "created_at": firestore.SERVER_TIMESTAMP,
+    }
+
+    doc_ref = db.collection(COMMENTS_COLLECTION).document()
+    doc_ref.set(comment)
+
+    write_audit_event(
+        event_type="comment_created",
+        data={
+            "product_id": product_id,
+            "message": "Product comment created successfully",
+            "comment_id": doc_ref.id,
+            "author": author,
+        },
+    )
+
+    return {
+        "id": doc_ref.id,
+        "product_id": product_id,
+        "author": author,
+        "text": text,
+    }
+
 
