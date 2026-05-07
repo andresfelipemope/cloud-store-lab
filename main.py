@@ -8,8 +8,14 @@ This file is intentionally incomplete. Students must implement:
 """
 import database
 
-from fastapi import FastAPI
+from fastapi import (
+    FastAPI,
+    UploadFile,
+    File,
+    HTTPException
+)
 from pydantic import BaseModel
+from storage_service import upload_image_to_gcs
 
 app = FastAPI(title="Cloud Computing Evaluation API (Starter)")
 
@@ -48,11 +54,26 @@ def list_products():
 
 
 @app.post("/products/{product_id}/image")
-def upload_product_image(product_id: int):
-    # TODO: Accept an image upload and store it in Cloud Storage.
-    # Save metadata or URL reference in Cloud SQL as needed.
-    # Students should implement secure bucket access and object naming.
-    pass
+def upload_product_image(
+    product_id: int,
+    file: UploadFile = File(...)
+):
+
+    try:
+        
+        img_url = upload_image_to_gcs(product_id, file)
+
+        return {
+            "message": "Image uploaded successfully",
+            "product_id": product_id,
+            "img_url": img_url
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
 
 @app.post("/products/{product_id}/comments")
