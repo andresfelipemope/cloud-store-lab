@@ -12,7 +12,8 @@ from fastapi import (
     FastAPI,
     UploadFile,
     File,
-    HTTPException
+    HTTPException,
+    Query,
 )
 from pydantic import BaseModel
 from storage_service import upload_image_to_gcs
@@ -30,7 +31,6 @@ class ProductCreate(BaseModel):
 class CommentCreate(BaseModel):
     author: str
     text: str
-
 
 @app.get("/health")
 def health():
@@ -61,10 +61,39 @@ def create_product(payload: ProductCreate):
 
 
 @app.get("/products")
-def list_products():
-    # TODO: Read and return product records from Cloud SQL (PostgreSQL).
-    # Consider pagination and filtering in the final implementation.
-    return database.get_products()
+def list_products(
+    page: int = Query(1, ge=1, description="Page number starting from 1"),
+    page_size: int = Query(5, ge=1, le=100, description="Number of products per page"),
+    name: str | None = Query(None, description="Filter products by partial name match"),
+    min_price: float | None = Query(None, ge=0, description="Filter products with price >= this value"),
+    max_price: float | None = Query(None, ge=0, description="Filter products with price <= this value"),
+):
+    if min_price is not None and max_price is not None and min_price > max_price:
+        raise HTTPException(
+            status_code=400,
+            detail="min_price cannot be greater than max_price",
+        )
+
+    result = database.get_products(
+        page=page,
+        page_size=page_size,
+        name=name,
+        min_price=min_price,
+        max_price=max_price,
+    )
+
+    return {
+        "page": page,
+        "page_size": page_size,
+        "filters": {
+            "name": name,
+            "min_price": min_price,
+            "max_price": max_price,
+        },
+        "count": len(result["products"]),
+        "total": result["total"],
+        "products": result["products"],
+    }
 
 
 @app.post("/products/{product_id}/image")

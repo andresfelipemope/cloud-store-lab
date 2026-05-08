@@ -49,24 +49,53 @@ def create_product(payload):
         "created_at": str(product[5])
     }
     
-def get_products():
+def get_products(
+    page: int = 1,
+    page_size: int = 5,
+    name: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+):
     conn = get_connection()
     cursor = conn.cursor()
-    
-    sql = """ 
+
+    where_clauses = []
+    params: list[object] = []
+
+    if name:
+        where_clauses.append("name ILIKE %s")
+        params.append(f"%{name}%")
+    if min_price is not None:
+        where_clauses.append("price >= %s")
+        params.append(min_price)
+    if max_price is not None:
+        where_clauses.append("price <= %s")
+        params.append(max_price)
+
+    where_sql = ""
+    if where_clauses:
+        where_sql = " WHERE " + " AND ".join(where_clauses)
+
+    count_sql = f"SELECT COUNT(*) FROM product{where_sql};"
+    cursor.execute(count_sql, params)
+    total = cursor.fetchone()[0]
+
+    offset = (page - 1) * page_size
+    sql = f"""
         SELECT id, name, description, price, img_url, created_at
-        FROM product;
+        FROM product{where_sql}
+        ORDER BY created_at DESC, id DESC
+        LIMIT %s OFFSET %s;
     """
-    
-    cursor.execute(sql)
-    
+
+    query_params = params + [page_size, offset]
+    cursor.execute(sql, query_params)
     products = cursor.fetchall()
-    
+
     cursor.close()
     conn.close()
-    
+
     result = []
-    
     for product in products:
         result.append(
             {
@@ -78,8 +107,11 @@ def get_products():
                 "created_at": str(product[5])
             }
         )
-    
-    return result
+
+    return {
+        "products": result,
+        "total": total,
+    }
 
 
 def product_exists(product_id: int) -> bool:
