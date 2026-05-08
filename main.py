@@ -16,6 +16,7 @@ from fastapi import (
 )
 from pydantic import BaseModel
 from storage_service import upload_image_to_gcs
+import firestore_service
 
 app = FastAPI(title="Cloud Computing Evaluation API (Starter)")
 
@@ -33,9 +34,22 @@ class CommentCreate(BaseModel):
 
 @app.get("/health")
 def health():
-    # TODO: Return service status and optionally dependency status.
-    # Keep this endpoint simple for uptime checks.
-    pass
+    errors: dict[str, str] = {}
+    try:
+        firestore_service.firestore_audit_events_check()
+    except Exception as e:
+        errors["audit_events"] = str(e)
+    try:
+        firestore_service.firestore_product_comments_check()
+    except Exception as e:
+        errors["product_comments"] = str(e)
+    if errors:
+        raise HTTPException(status_code=500, detail=errors)
+    return {
+        "status": "ok",
+        "firestore": {"audit_events": "ok", "product_comments": "ok"},
+        "app": "Cloud Computing Evaluation API",
+    }
 
 
 @app.post("/products")
@@ -87,13 +101,61 @@ def upload_product_image(
 
 @app.post("/products/{product_id}/comments")
 def add_product_comment(product_id: int, payload: CommentCreate):
-    # TODO: Write comment/audit-style data to Firestore.
-    # Students should design a document structure and validation rules.
-    pass
+    if not database.product_exists(product_id):
+        raise HTTPException(status_code=404, detail="Product not found")
+    if not payload.author.strip():
+        raise HTTPException(status_code=400, detail="Author is required")
+    if not payload.text.strip():
+        raise HTTPException(status_code=400, detail="Comment text is required")
+
+    try:
+        comment = firestore_service.add_product_comment(
+            product_id=product_id,
+            author=payload.author,
+            text=payload.text,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Firestore error: {e}",
+        ) from e
+
+    return {
+        "message": "Comment created successfully",
+        "comment": comment,
+    }
 
 
 @app.get("/audit/events")
-def get_audit_events():
-    # TODO: Read audit events from Firestore and return them.
-    # Students should think about ordering, limits, and filtering.
-    pass
+def get_audit_events(
+    limit: int = 50,
+    event_type: str | None = None,
+    product_id: int | None = None,
+):
+    max_lim = firestore_service.MAX_AUDIT_QUERY_LIMIT
+    if limit < 1 or limit > max_lim:
+        raise HTTPException(
+            status_code=400,
+            detail=f"limit must be between 1 and {max_lim} (inclusive), got {limit}",
+        )
+
+    try:
+        events = firestore_service.list_audit_events(
+            limit=limit,
+            event_type=event_type,
+            product_id=product_id,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Firestore error: {e}",
+        ) from e
+    return {
+        "applied": {
+            "limit": limit,
+            "event_type": event_type,
+            "product_id": product_id,
+        },
+        "count": len(events),
+        "events": events,
+    }
