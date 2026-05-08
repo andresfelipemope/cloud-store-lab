@@ -16,15 +16,16 @@ def upload_image_to_gcs(product_id: int, file: UploadFile):
     cursor = conn.cursor()
     
     cursor.execute(
-        "SELECT id FROM products WHERE id = %s",
+        "SELECT id FROM product WHERE id = %s",
         (product_id,)
     )
 
     product = cursor.fetchone()
-    cursor.close()
-    conn.close()
+    
     
     if product is None:
+        cursor.close()
+        conn.close()
         raise HTTPException(
             status_code=404,
             detail="Product not found"
@@ -44,5 +45,18 @@ def upload_image_to_gcs(product_id: int, file: UploadFile):
         file.file,
         content_type=file.content_type
     )
+    
+    sql = """
+        UPDATE product
+        SET img_url = %s
+        WHERE id = %s;
+    """
+    
+    cursor.execute(sql, (blob.public_url, product_id))
+    
+    conn.commit()
+    
+    cursor.close()
+    conn.close()
 
     return blob.public_url
