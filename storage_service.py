@@ -3,7 +3,7 @@ import os
 from fastapi import UploadFile, HTTPException
 from google.cloud import storage
 from dotenv import load_dotenv
-import database
+import database, firestore_service
 
 load_dotenv()
 
@@ -58,5 +58,14 @@ def upload_image_to_gcs(product_id: int, file: UploadFile):
     
     cursor.close()
     conn.close()
+
+    firestore_service.write_audit_event(
+        event_type="product_image_uploaded",
+        data={
+            "message": "Product image uploaded successfully",
+            "product_id": product_id,
+            "img_url": blob.public_url
+        }
+    )
 
     return blob.public_url

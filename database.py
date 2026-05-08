@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import firestore_service
 
 from dotenv import load_dotenv
 
@@ -39,6 +40,17 @@ def create_product(payload):
     conn.commit()
     cursor.close()
     conn.close()
+    
+    firestore_service.write_audit_event(
+        event_type="product_created",
+        data={
+            "message": "Product created successfully",
+            "product_id": product[0],
+            "name": product[1],
+            "description": product[2],
+            "price": float(product[3]),
+        }
+    )
     
     return {
         "id": product[0],
@@ -107,6 +119,14 @@ def get_products(
                 "created_at": str(product[5])
             }
         )
+
+    firestore_service.write_audit_event(
+        event_type="products_listed",
+        data={
+            "message": "Products listed successfully",
+            "results": result
+        }
+    )
 
     return {
         "products": result,
