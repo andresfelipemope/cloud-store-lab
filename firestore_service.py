@@ -9,7 +9,7 @@ DATABASE_ID = os.getenv("FIRESTORE_DATABASE_ID")
 AUDIT_COLLECTION = os.getenv("FIRESTORE_COLLECTION_AUDIT_EVENTS")
 COMMENTS_COLLECTION = os.getenv("FIRESTORE_COLLECTION_COMMENTS")
 
-_MAX_AUDIT_LIMIT = 100
+MAX_AUDIT_QUERY_LIMIT = 50
 
 
 def get_firestore_client():
@@ -67,19 +67,12 @@ def add_product_comment(product_id: int, author: str, text: str):
         "text": text,
     }
 
-def _normalize_audit_limit(limit: int) -> int:
-    if limit < 1:
-        return 1
-    return min(limit, _MAX_AUDIT_LIMIT)
-
-
 def list_audit_events(
     limit: int = 50,
     event_type: str | None = None,
     product_id: int | None = None,
 ):
     db = get_firestore_client()
-    capped = _normalize_audit_limit(limit)
 
     query = db.collection(AUDIT_COLLECTION)
     if event_type is not None and event_type.strip():
@@ -89,7 +82,7 @@ def list_audit_events(
 
     docs = query.order_by(
         "created_at", direction=firestore.Query.DESCENDING
-    ).limit(capped).stream()
+    ).limit(limit).stream()
 
     events = []
     for doc in docs:
@@ -104,4 +97,14 @@ def list_audit_events(
 
     return events
 
+
+def firestore_audit_events_check():
+    db = get_firestore_client()
+    list(db.collection(AUDIT_COLLECTION).limit(1).stream())
+    return True
+
+def firestore_product_comments_check():
+    db = get_firestore_client()
+    list(db.collection(COMMENTS_COLLECTION).limit(1).stream())
+    return True
 
