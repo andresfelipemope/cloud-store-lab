@@ -15,7 +15,7 @@ from fastapi import (
     HTTPException,
     Query,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from storage_service import upload_image_to_gcs
 import firestore_service
 
@@ -23,10 +23,22 @@ app = FastAPI(title="Cloud Computing Evaluation API (Starter)")
 
 
 class ProductCreate(BaseModel):
-    name: str
-    description: str | None = None
-    price: float
-
+    name: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Product name (required, 1-100 characters)"
+    )
+    description: str | None = Field(
+        None,
+        max_length=1000,
+        description="Product description (optional, max 1000 characters)"
+    )
+    price: float = Field(
+        ...,
+        gt=0,
+        description="Product price (required, must be greater than 0)"
+    )
 
 class CommentCreate(BaseModel):
     author: str
@@ -51,14 +63,12 @@ def health():
         "app": "Cloud Computing Evaluation API",
     }
 
-
 @app.post("/products")
 def create_product(payload: ProductCreate):
     # TODO: Validate and store product data in Cloud SQL (PostgreSQL).
     # Do not keep products in memory for the final solution.
     # Students should use psycopg2 and proper SQL schema design.
     return database.create_product(payload)
-
 
 @app.get("/products")
 def list_products(
@@ -95,7 +105,6 @@ def list_products(
         "products": result["products"],
     }
 
-
 @app.post("/products/{product_id}/image")
 def upload_product_image(
     product_id: int,
@@ -127,7 +136,6 @@ def upload_product_image(
             detail=str(e)
         )
 
-
 @app.post("/products/{product_id}/comments")
 def add_product_comment(product_id: int, payload: CommentCreate):
     if not database.product_exists(product_id):
@@ -153,7 +161,6 @@ def add_product_comment(product_id: int, payload: CommentCreate):
         "message": "Comment created successfully",
         "comment": comment,
     }
-
 
 @app.get("/audit/events")
 def get_audit_events(
