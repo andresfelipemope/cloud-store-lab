@@ -80,3 +80,14 @@ def get_products():
         )
     
     return result
+
+
+def product_exists(product_id: int) -> bool:
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM product WHERE id = %s LIMIT 1", (product_id,))
+        return cursor.fetchone() is not None
+    finally:
+        cursor.close()
+        conn.close()
