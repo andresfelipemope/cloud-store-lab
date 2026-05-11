@@ -55,6 +55,7 @@ def add_product_comment(product_id: int, author: str, text: str):
         data={
             "product_id": product_id,
             "message": "Product comment created successfully",
+            "text": text,
             "comment_id": doc_ref.id,
             "author": author,
         },
