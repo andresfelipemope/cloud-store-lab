@@ -21,7 +21,6 @@ import firestore_service
 
 app = FastAPI(title="Cloud Computing Evaluation API (Starter)")
 
-
 class ProductCreate(BaseModel):
     name: str = Field(
         ...,

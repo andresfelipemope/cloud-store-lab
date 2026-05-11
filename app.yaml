@@ -1,17 +1,18 @@
-# Intentionally incomplete App Engine template.
-# Students must adapt runtime settings, entrypoint, env vars,
-# and service integration for their own deployment.
-
 runtime: python311
 
 entrypoint: gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app
 
 env_variables:
-  # TODO: Fill these values for your project setup.
   GOOGLE_CLOUD_PROJECT: "previo2-181122"
-  DB_HOST: "127.0.0.1"
+
+  DB_HOST: "/cloudsql/previo2-181122:us-central1:cloud-store-lab-db"
   DB_NAME: "cloudstore"
   DB_USER: "clouduser"
   DB_PASSWORD: "tiki69"
+
   GCS_BUCKET_NAME: "cloud-store-images-535967"
+
   FIRESTORE_COLLECTION_AUDIT_EVENTS: "audit_events"
+
+beta_settings:
+  cloud_sql_instances: "previo2-181122:us-central1:cloud-store-lab-db"
