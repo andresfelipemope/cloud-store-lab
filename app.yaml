@@ -12,7 +12,9 @@ env_variables:
 
   GCS_BUCKET_NAME: "cloud-store-images-535967"
 
+  FIRESTORE_DATABASE_ID: "cloudstore-db-nosql"
   FIRESTORE_COLLECTION_AUDIT_EVENTS: "audit_events"
+  FIRESTORE_COLLECTION_COMMENTS: "comments"
 
 beta_settings:
   cloud_sql_instances: "previo2-181122:us-central1:cloud-store-lab-db"
